@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "client/dist"
       }
     },
     {
@@ -19,20 +19,8 @@
       "destination": "server/src/server.ts"
     },
     {
-      "source": "/assets/:path*",
-      "destination": "client/assets/:path*"
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": "client/favicon.svg"
-    },
-    {
-      "source": "/icons.svg",
-      "destination": "client/icons.svg"
-    },
-    {
       "source": "/((?!api/).*)",
-      "destination": "client/index.html"
+      "destination": "/index.html"
     }
   ]
 }

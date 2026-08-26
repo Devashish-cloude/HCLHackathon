@@ -39,10 +39,12 @@ app.use('/api', apiRouter);
 // Global Error Handler
 app.use(errorMiddleware);
 
-// Launch server
-app.listen(PORT, () => {
-  console.log(`[LearnPath AI Server] running on port ${PORT}`);
-  console.log(`Accepting requests from client at ${clientUrl}`);
-});
+// Launch server only when running locally (not in Vercel serverless functions)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`[LearnPath AI Server] running on port ${PORT}`);
+    console.log(`Accepting requests from client at ${clientUrl}`);
+  });
+}
 
-export default app; // For testing
+export default app; // For testing and Vercel serverless entry

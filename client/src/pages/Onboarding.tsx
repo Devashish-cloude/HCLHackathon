@@ -335,7 +335,7 @@ export const Onboarding: React.FC = () => {
 
               {/* Preferred learning style selection */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1">
+                <label className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1">
                   <BookOpen className="h-4 w-4 text-slate-400" /> Preferred Learning Format
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-2">

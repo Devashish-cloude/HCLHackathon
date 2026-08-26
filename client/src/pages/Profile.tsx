@@ -108,7 +108,7 @@ export const Profile: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <User className="h-4 w-4 text-slate-400" /> Full Name
               </label>
               <input
@@ -121,7 +121,7 @@ export const Profile: React.FC = () => {
 
             {/* Current Role */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <Award className="h-4 w-4 text-slate-400" /> Current Role / Status
               </label>
               <input
@@ -134,7 +134,7 @@ export const Profile: React.FC = () => {
 
             {/* Career Goal */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <Award className="h-4 w-4 text-slate-400" /> Target Career Goal
               </label>
               <input
@@ -147,7 +147,7 @@ export const Profile: React.FC = () => {
 
             {/* Experience Level */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <Award className="h-4 w-4 text-slate-400" /> Experience Level
               </label>
               <select
@@ -163,7 +163,7 @@ export const Profile: React.FC = () => {
 
             {/* Hours per Day */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <Clock className="h-4 w-4 text-slate-400" /> Study Hours per Day
               </label>
               <input
@@ -179,7 +179,7 @@ export const Profile: React.FC = () => {
 
             {/* Study format */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1">
                 <BookOpen className="h-4 w-4 text-slate-400" /> Preferred Learning Style
               </label>
               <select

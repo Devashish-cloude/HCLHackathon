@@ -119,7 +119,11 @@ export class UserController {
       });
 
       let continueLearning = null;
-      const activePathItem = learningPath?.items.find(item => item.status === 'InProgress');
+      let activePathItem = learningPath?.items.find(item => item.status === 'InProgress');
+      if (!activePathItem) {
+        // Fallback to first Available item (e.g. for brand new users)
+        activePathItem = learningPath?.items.find(item => item.status === 'Available');
+      }
 
       if (activePathItem && activePathItem.moduleId) {
         const activeModule = await prisma.module.findUnique({
@@ -155,7 +159,7 @@ export class UserController {
             courseTitle: activeModule.course.title,
             courseDescription: activeModule.course.description,
             moduleTitle: activeModule.title,
-            progressPercentage: courseProgress || 65, // fallback to matching screenshot
+            progressPercentage: courseProgress,
             durationRemaining: '42 min remaining',
             imageUrl: activeModule.course.imageUrl
           };
@@ -218,10 +222,10 @@ export class UserController {
             careerGoal: profile.careerGoal
           },
           stats: {
-            overallProgress: overallProgress || 42, // Fallback to match mock screenshot
+            overallProgress: overallProgress,
             learningStreak: profile.streak,
-            skillsMastered: skillsMastered || 12,
-            coursesCompleted: coursesCompleted || 3
+            skillsMastered: skillsMastered,
+            coursesCompleted: coursesCompleted
           },
           continueLearning,
           todaysFocus,

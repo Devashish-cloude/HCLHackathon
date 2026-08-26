@@ -1,0 +1,277 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum TaskType {
+  LESSON
+  PRACTICE
+  REVIEW
+  ASSESSMENT
+}
+
+enum RecommendationType {
+  COURSE
+  MODULE
+  PROJECT
+  EXERCISE
+  ASSESSMENT
+}
+
+enum AssessmentType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  CODING
+  SHORT_ANSWER
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  passwordHash       String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  role               Role                @default(USER)
+  profile            Profile?
+  userSkills         UserSkill[]
+  userProgress       UserProgress[]
+  attempts           AssessmentAttempt[]
+  recommendations    Recommendation[]
+  conversations      Conversation[]
+  dailyTasks         DailyTask[]
+  notifications      Notification[]
+  learningSessions   LearningSession[]
+  learningPath       LearningPath?
+}
+
+model Profile {
+  id                    String      @id @default(uuid())
+  userId                String      @unique
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                  String
+  currentRole           String
+  experienceLevel       String
+  careerGoal            String
+  interests             String[]
+  hoursPerDay           Float       @default(1.0)
+  preferredLearningStyle String     @default("Coding")
+  goalStatement         String
+  onboardingCompleted   Boolean     @default(false)
+  avatarUrl             String?
+  streak                Int         @default(0)
+  lastActive            DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+model Skill {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  category    String
+  description String
+  userSkills  UserSkill[]
+}
+
+model UserSkill {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId   String
+  skill     Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  level     SkillLevel @default(BEGINNER)
+  score     Int        @default(0)
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, skillId])
+}
+
+model Course {
+  id          String              @id @default(uuid())
+  title       String              @unique
+  description String
+  difficulty  String
+  duration    String
+  rating      Float               @default(4.5)
+  imageUrl    String?
+  tags        String[]
+  modules     Module[]
+}
+
+model Module {
+  id          String              @id @default(uuid())
+  courseId    String
+  course      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  order       Int
+  lessons     Lesson[]
+  learningItems LearningPathItem[]
+}
+
+model Lesson {
+  id            String         @id @default(uuid())
+  moduleId      String
+  module        Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  content       String         @db.Text
+  duration      Int
+  order         Int
+  videoUrl      String?
+  codeExample   String?        @db.Text
+  codingExercise String?       @db.Text
+  quizQuestions Json?
+  userProgress  UserProgress[]
+}
+
+model LearningPath {
+  id                String             @id @default(uuid())
+  userId            String             @unique
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal              String
+  estimatedDuration String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  items             LearningPathItem[]
+}
+
+model LearningPathItem {
+  id             String       @id @default(uuid())
+  learningPathId String
+  learningPath   LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  phaseTitle     String
+  moduleId       String?
+  module         Module?      @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+  title          String
+  description    String
+  order          Int
+  status         String       @default("Locked")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model UserProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  score       Int?
+  completedAt DateTime? @default(now())
+
+  @@unique([userId, lessonId])
+}
+
+model Assessment {
+  id          String              @id @default(uuid())
+  title       String
+  description String
+  type        AssessmentType      @default(MULTIPLE_CHOICE)
+  duration    Int
+  questions   Question[]
+  attempts    AssessmentAttempt[]
+}
+
+model Question {
+  id           String     @id @default(uuid())
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  questionText String
+  type         String
+  options      Json?
+  correctAnswer String
+  points       Int        @default(10)
+}
+
+model AssessmentAttempt {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  score        Int
+  maxScore     Int
+  passed       Boolean
+  completedAt  DateTime   @default(now())
+  answers      Json
+  feedback     Json?
+}
+
+model Recommendation {
+  id          String             @id @default(uuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  type        RecommendationType
+  targetId    String
+  explanation String
+  clicked     Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String       @db.Text
+  createdAt      DateTime     @default(now())
+}
+
+model DailyTask {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskText    String
+  taskType    TaskType  @default(LESSON)
+  estimatedTime String
+  completed   Boolean   @default(false)
+  date        DateTime  @default(now())
+  completedAt DateTime?
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model LearningSession {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  durationMinutes Int
+  date            DateTime @default(now())
+}

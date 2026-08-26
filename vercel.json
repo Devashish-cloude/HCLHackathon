@@ -19,8 +19,20 @@
       "destination": "server/src/server.ts"
     },
     {
+      "source": "/assets/:path*",
+      "destination": "client/assets/:path*"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "client/favicon.svg"
+    },
+    {
+      "source": "/icons.svg",
+      "destination": "client/icons.svg"
+    },
+    {
       "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "destination": "client/index.html"
     }
   ]
 }
